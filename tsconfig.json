@@ -12,6 +12,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "react-jsx",
+    "types": ["node", "./src/window.d.ts"],
     "paths": {
       "*": ["node_modules/*"]
     }
