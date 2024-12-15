@@ -18,6 +18,7 @@ export const ProjectsMenu = ({ projects }: Props) => {
           <Button
             variant="ghost"
             className="w-full justify-start"
+            size="3"
             onClick={() => addView(file.path)}
           >
             {file.name}
