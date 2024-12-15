@@ -19,6 +19,7 @@ export const TabViewsState = ({ children }: Props) => {
     },
     [setOpenViews, setActiveView]
   );
+
   const handleRemoveView = useCallback(
     (value: string) => {
       setActiveView((prev) => {
@@ -32,6 +33,7 @@ export const TabViewsState = ({ children }: Props) => {
     },
     [openViews, setOpenViews]
   );
+
   const handleSetActiveView = useCallback(
     (value: string) => {
       setActiveView(value);

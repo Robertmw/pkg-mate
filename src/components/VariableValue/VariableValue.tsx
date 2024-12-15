@@ -1,4 +1,6 @@
-import { Box, Button, Flex, TextField } from "@radix-ui/themes";
+import { useMemo } from "react";
+
+import { Box, Button, Flex } from "@radix-ui/themes";
 
 import {
   AccordionContent,
@@ -6,43 +8,26 @@ import {
   AccordionTrigger,
 } from "../../components/Accordion";
 
-import { type VariableEntry } from "../../types/VariableEntry";
+import { ListContent } from "./components/ListContent";
+import { TextFieldContent } from "./components/TextFieldContent";
+
+import type { VariableEntry } from "../../types/VariableEntry";
 
 type Props = {
   data: VariableEntry;
+  onDelete: (key: string) => void;
+  onSave: (key: string) => void;
 };
 
-export const VariableValue = ({ data }: Props) => {
+export const VariableValue = ({ data, onDelete, onSave }: Props) => {
   const isList = data.value.includes(",");
 
-  let content = (
-    <TextField.Root
-      autoFocus
-      className="w-full"
-      defaultValue={data.value}
-      id={data.key}
-      name={data.key}
-      size="2"
-    />
-  );
-
-  if (isList) {
-    content = (
-      <ul className="flex flex-col w-full gap-1">
-        {data.value.split(",").map((item, index) => (
-          <li key={index}>
-            <TextField.Root
-              className="w-full"
-              defaultValue={item}
-              id={`${data.key}_${index}`}
-              name={`${data.key}_${index}`}
-              size="2"
-            />
-          </li>
-        ))}
-      </ul>
-    );
-  }
+  const content = useMemo(() => {
+    if (isList) {
+      return <ListContent data={data} />;
+    }
+    return <TextFieldContent data={data} />;
+  }, [isList]);
 
   return (
     <AccordionItem value={data.key}>
@@ -53,10 +38,18 @@ export const VariableValue = ({ data }: Props) => {
         {content}
         <Box py="4">
           <Flex gap="4" justify="end">
-            <Button color="red" variant="soft">
+            <Button
+              color="red"
+              variant="soft"
+              onClick={() => onDelete(data.key)}
+            >
               Delete
             </Button>
-            <Button color="green" variant="solid">
+            <Button
+              color="green"
+              variant="solid"
+              onClick={() => onSave(data.key)}
+            >
               Save
             </Button>
           </Flex>

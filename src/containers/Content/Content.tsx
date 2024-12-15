@@ -20,9 +20,7 @@ export const Content = () => {
         <FilesNavigation />
       </ScrollArea>
       <ScrollArea scrollbars="vertical" style={{ height: height - 40 }}>
-        <Box className="p-4">
-          <CurrentEnv />
-        </Box>
+        <CurrentEnv />
       </ScrollArea>
     </Box>
   );

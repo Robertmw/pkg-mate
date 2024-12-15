@@ -2,11 +2,10 @@ import { useMemo } from "react";
 
 import { Box } from "@radix-ui/themes";
 
-import { AccordionRoot } from "../../components/Accordion";
-import { VariableValue } from "../../components/VariableValue";
-
-import { useTabViewsState } from "../../hooks/useTabViewsState";
 import { useAppState } from "../../hooks/useAppState";
+import { useTabViewsState } from "../../hooks/useTabViewsState";
+
+import { ActiveFileValues } from "../../components/ActiveFileValues";
 
 export const CurrentEnv = () => {
   const { activeView } = useTabViewsState();
@@ -18,13 +17,12 @@ export const CurrentEnv = () => {
   );
 
   return (
-    <Box className="flex flex-col gap-2">
+    <Box className="flex flex-col gap-2 p-4">
       {activeFile && (
-        <AccordionRoot type="multiple">
-          {activeFile.variables.map((variable) => (
-            <VariableValue key={variable.key} data={variable} />
-          ))}
-        </AccordionRoot>
+        <ActiveFileValues
+          activeFilePath={activeFile.path}
+          variables={activeFile.variables}
+        />
       )}
     </Box>
   );
