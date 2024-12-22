@@ -8,7 +8,7 @@ import { EmptyState } from "../../components/EmptyState";
 import { FilesNavigation } from "../FilesNavigation";
 import { CurrentEnv } from "../CurrentEnv";
 
-export const Content = () => {
+export const GlobalContent = () => {
   const { width } = useWindowSize();
   const { activeView } = useTabViewsState();
 

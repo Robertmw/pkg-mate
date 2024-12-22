@@ -5,8 +5,8 @@ import { Box, Theme } from "@radix-ui/themes";
 import { AppState } from "../../providers/AppState";
 import { TabViewsState } from "../../providers/TabViewsState";
 
-import { Sidebar } from "../../containers/Sidebar";
-import { Content } from "../../containers/Content";
+import { GlobalSidebar } from "../GlobalSidebar";
+import { GlobalContent } from "../GlobalContent";
 
 export const GlobalApp = () => {
   const [defaultPath, setDefaultPath] = useState<string | null>();
@@ -24,8 +24,8 @@ export const GlobalApp = () => {
       <AppState key={defaultPath} defaultPath={defaultPath}>
         <TabViewsState>
           <Box className="flex h-screen">
-            <Sidebar />
-            <Content />
+            <GlobalSidebar />
+            <GlobalContent />
           </Box>
         </TabViewsState>
       </AppState>

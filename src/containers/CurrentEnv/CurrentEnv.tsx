@@ -48,14 +48,9 @@ export const CurrentEnv = () => {
   }
 
   return (
-    <Grid
-      columns={{
-        initial: "4",
-      }}
-      className="h-full"
-    >
+    <Flex className="h-full">
       <ScrollArea
-        className={cn("col-span-2", "h-full", "border-r")}
+        className={cn("w-96", "border-r", "shrink-0")}
         scrollbars="vertical"
         style={{ height: height - 40 }}
       >
@@ -72,9 +67,10 @@ export const CurrentEnv = () => {
           setActiveVariable={setActiveVariable}
         />
       </ScrollArea>
-      <Box className="col-span-2">
+      <Box className="grow">
         {activeVariable && (
           <ActiveFileValues
+            key={activeVariable}
             activeFilePath={activeFile.path}
             variable={activeFile.variables.find(
               (variable) => variable.key === activeVariable
@@ -82,6 +78,6 @@ export const CurrentEnv = () => {
           />
         )}
       </Box>
-    </Grid>
+    </Flex>
   );
 };

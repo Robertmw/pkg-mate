@@ -36,15 +36,17 @@ export const AppState = ({ children, defaultPath }: AppStateProps) => {
   const handleOpenFolderDialog = useCallback(async () => {
     const folderPath = await window.electronAPI.openFolder();
 
-    setRootPath(folderPath);
+    if (folderPath) {
+      setRootPath(folderPath);
 
-    window.electronAPI.storageSet("projectPath", folderPath);
-    setIsLoadingFiles(true);
+      window.electronAPI.storageSet("projectPath", folderPath);
+      setIsLoadingFiles(true);
 
-    const files = await getEnvsFromPath(folderPath);
+      const files = await getEnvsFromPath(folderPath);
 
-    setIsLoadingFiles(false);
-    setEnvFiles(files);
+      setIsLoadingFiles(false);
+      setEnvFiles(files);
+    }
   }, []);
 
   const api = useMemo(
