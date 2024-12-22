@@ -1,37 +1,39 @@
 import { useWindowSize } from "react-use";
 
-import { Box, Heading, ScrollArea } from "@radix-ui/themes";
+import { Box, ScrollArea } from "@radix-ui/themes";
 
 import { useTabViewsState } from "../../hooks/useTabViewsState";
+import { EmptyState } from "../../components/EmptyState";
 
 import { FilesNavigation } from "../FilesNavigation";
 import { CurrentEnv } from "../CurrentEnv";
 
 export const Content = () => {
-  const { width, height } = useWindowSize();
+  const { width } = useWindowSize();
   const { activeView } = useTabViewsState();
 
   return (
     <Box className="relative h-screen flex grow flex-col">
       <ScrollArea
+        className="border-b shrink-0"
         scrollbars="horizontal"
         type="scroll"
         style={{
           height: 40,
-          width: width - 320,
+          width: width - 240,
         }}
       >
         <FilesNavigation />
       </ScrollArea>
-      <ScrollArea scrollbars="vertical" style={{ height: height - 40 }}>
-        {activeView ? (
-          <CurrentEnv />
-        ) : (
-          <Box className="flex flex-col gap-2 p-4">
-            <Heading size="2">No active file</Heading>
-          </Box>
-        )}
-      </ScrollArea>
+
+      {activeView ? (
+        <CurrentEnv />
+      ) : (
+        <EmptyState
+          iconName="FolderRoot"
+          message="Select a project from the sidebar"
+        />
+      )}
     </Box>
   );
 };

@@ -1,13 +1,27 @@
 import { useEffect, useMemo, useState } from "react";
+import { useWindowSize } from "react-use";
 
-import { Box, Checkbox, Flex, Grid, Heading, Text } from "@radix-ui/themes";
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  ScrollArea,
+  TextField,
+} from "@radix-ui/themes";
 
 import { cn } from "../../utils/cn";
 
 import { useAppState } from "../../hooks/useAppState";
 import { useTabViewsState } from "../../hooks/useTabViewsState";
 
+import { EnvList } from "../../components/EnvList";
+import { EmptyState } from "../../components/EmptyState";
+import { ActiveFileValues } from "../../components/ActiveFileValues";
+
 export const CurrentEnv = () => {
+  const { height } = useWindowSize();
+
   const { activeView } = useTabViewsState();
   const { envFiles } = useAppState();
 
@@ -19,16 +33,17 @@ export const CurrentEnv = () => {
   );
 
   useEffect(() => {
-    if (activeFile.variables.length > 0) {
+    if (activeFile?.variables && activeFile.variables.length > 0) {
       setActiveVariable(activeFile.variables[0].key);
     }
-  }, [activeFile.variables]);
+  }, [activeFile?.variables]);
 
   if (!activeFile) {
     return (
-      <Box className="flex flex-col gap-2 p-4">
-        <Heading size="2">No active file</Heading>
-      </Box>
+      <EmptyState
+        iconName="PackageOpen"
+        message="No active file in the selected project"
+      />
     );
   }
 
@@ -39,34 +54,34 @@ export const CurrentEnv = () => {
       }}
       className="h-full"
     >
-      <Box className={cn("flex flex-col", "col-span-2", "h-full", "border-r")}>
-        {activeFile.variables.map((variable) => (
-          <Flex
-            key={variable.key}
-            className={cn(
-              "group",
-              "p-4",
-              "cursor-pointer",
-              "hover:bg-blue-50",
-              {
-                "text-blue-500": activeVariable === variable.key,
-              }
+      <ScrollArea
+        className={cn("col-span-2", "h-full", "border-r")}
+        scrollbars="vertical"
+        style={{ height: height - 40 }}
+      >
+        <Box className="p-4">
+          <TextField.Root size="3" placeholder="Add new variable">
+            <TextField.Slot side="right" px="1">
+              <Button>Add</Button>
+            </TextField.Slot>
+          </TextField.Root>
+        </Box>
+        <EnvList
+          activeFile={activeFile}
+          activeVariable={activeVariable}
+          setActiveVariable={setActiveVariable}
+        />
+      </ScrollArea>
+      <Box className="col-span-2">
+        {activeVariable && (
+          <ActiveFileValues
+            activeFilePath={activeFile.path}
+            variable={activeFile.variables.find(
+              (variable) => variable.key === activeVariable
             )}
-            direction="row"
-            onClick={() => setActiveVariable(variable.key)}
-          >
-            <Flex gap="4" justify="center" align="center">
-              <Checkbox
-                className={cn("opacity-0", "group-hover:opacity-100")}
-              />
-              <Text size="2" weight="medium">
-                {variable.key}
-              </Text>
-            </Flex>
-          </Flex>
-        ))}
+          />
+        )}
       </Box>
-      <Box className="col-span-2"></Box>
     </Grid>
   );
 };

@@ -20,12 +20,7 @@ export const GlobalApp = () => {
   }, []);
 
   return (
-    <Theme
-      // appearance="dark"
-      accentColor="blue"
-      panelBackground="solid"
-      radius="none"
-    >
+    <Theme accentColor="blue" panelBackground="solid" radius="medium">
       <AppState key={defaultPath} defaultPath={defaultPath}>
         <TabViewsState>
           <Box className="flex h-screen">

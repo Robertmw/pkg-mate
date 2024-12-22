@@ -19,9 +19,8 @@ export const TextFieldContent = ({ data }: Props) => {
       {...field}
       autoFocus
       className="w-full"
-      defaultValue={data.value}
       id={data.key}
-      size="2"
+      size="3"
     />
   );
 };

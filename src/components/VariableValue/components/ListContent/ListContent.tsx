@@ -16,7 +16,7 @@ export const ListContent = ({ data }: Props) => {
             defaultValue={item}
             id={`${data.key}_${index}`}
             name={`${data.key}_${index}`}
-            size="2"
+            size="3"
           />
         </li>
       ))}

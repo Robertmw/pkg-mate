@@ -12,12 +12,12 @@ type Props = {
 export const ProjectsMenu = ({ projects }: Props) => {
   const { addView } = useTabViewsState();
   return (
-    <ul className="flex flex-col gap-2">
+    <ul className="flex flex-col gap-4">
       {projects.map((file) => (
         <li key={file.path}>
           <Button
             variant="ghost"
-            className="w-full justify-start"
+            className="w-full justify-start truncate whitespace-nowrap text-ellipsis"
             size="3"
             onClick={() => addView(file.path)}
           >

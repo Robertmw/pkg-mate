@@ -1,30 +1,26 @@
 import { useForm, FormProvider } from "react-hook-form";
+import { Flex } from "@radix-ui/themes";
 
 import { type VariableEntry } from "../../types/VariableEntry";
 
-import { AccordionRoot } from "../Accordion";
 import { VariableValue } from "../VariableValue";
 
 type Props = {
   activeFilePath: string;
-  variables: VariableEntry[];
+  variable: VariableEntry;
 };
 
-export const ActiveFileValues = ({ activeFilePath, variables }: Props) => {
+export const ActiveFileValues = ({ activeFilePath, variable }: Props) => {
+  const defaultValues = variable?.key ? { [variable.key]: variable.value } : {};
   const methods = useForm({
-    defaultValues: variables.reduce((acc, variable) => {
-      acc[variable.key] = variable.value;
-      return acc;
-    }, {} as Record<string, string | string[]>),
+    defaultValues,
   });
 
   const handleSaveVariable = (key: string) => {
     const values = methods.getValues();
     const formValue = values[key];
 
-    const variable = variables.find((variable) => variable.key === key);
-
-    if (formValue && variable) {
+    if (formValue) {
       const [_, comment] = variable.rawValue.split("#");
       const value = comment ? `${formValue} #${comment}` : formValue.toString();
 
@@ -36,18 +32,20 @@ export const ActiveFileValues = ({ activeFilePath, variables }: Props) => {
     console.log("Delete", key);
   };
 
+  if (!variable) {
+    return null;
+  }
+
   return (
-    <FormProvider {...methods}>
-      <AccordionRoot type="multiple">
-        {variables.map((variable) => (
-          <VariableValue
-            key={variable.key}
-            data={variable}
-            onDelete={handleDeleteVariable}
-            onSave={handleSaveVariable}
-          />
-        ))}
-      </AccordionRoot>
-    </FormProvider>
+    <Flex className="p-4" direction="column">
+      <FormProvider {...methods}>
+        <VariableValue
+          key={variable.key}
+          data={variable}
+          onDelete={handleDeleteVariable}
+          onSave={handleSaveVariable}
+        />
+      </FormProvider>
+    </Flex>
   );
 };
