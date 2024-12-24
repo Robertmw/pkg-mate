@@ -1,6 +1,7 @@
 import os from "os";
 import { app, BrowserWindow, ipcMain } from "electron";
 
+import { installExtension, REDUX_DEVTOOLS } from "electron-devtools-installer";
 import storage from "electron-json-storage";
 
 import {
@@ -71,6 +72,10 @@ app.on("ready", () => {
 
     createWindow(state);
   });
+
+  installExtension(REDUX_DEVTOOLS)
+    .then((ext) => console.log(`Added Extension:  ${ext.name}`))
+    .catch((err) => console.log("An error occurred: ", err));
 });
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

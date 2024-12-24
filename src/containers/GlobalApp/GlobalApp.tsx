@@ -1,34 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { Box, Theme } from "@radix-ui/themes";
 
-import { AppState } from "../../providers/AppState";
-import { TabViewsState } from "../../providers/TabViewsState";
+import { useAppDispatch, getInitialRootAndFiles } from "../../store";
 
 import { GlobalSidebar } from "../GlobalSidebar";
 import { GlobalContent } from "../GlobalContent";
 
 export const GlobalApp = () => {
-  const [defaultPath, setDefaultPath] = useState<string | null>();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    window.electronAPI.storageGet("projectPath").then((path: string) => {
-      if (path) {
-        setDefaultPath(path);
-      }
-    });
+    dispatch(getInitialRootAndFiles());
   }, []);
 
   return (
     <Theme accentColor="blue" panelBackground="solid" radius="medium">
-      <AppState key={defaultPath} defaultPath={defaultPath}>
-        <TabViewsState>
-          <Box className="flex h-screen">
-            <GlobalSidebar />
-            <GlobalContent />
-          </Box>
-        </TabViewsState>
-      </AppState>
+      <Box className="flex h-screen">
+        <GlobalSidebar />
+        <GlobalContent />
+      </Box>
     </Theme>
   );
 };

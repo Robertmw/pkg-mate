@@ -18,7 +18,7 @@ export const TextFieldContent = ({ data }: Props) => {
     <TextField.Root
       {...field}
       autoFocus
-      className="w-full"
+      className="w-full text-sm"
       id={data.key}
       size="3"
     />

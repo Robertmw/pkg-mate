@@ -8,13 +8,23 @@ import {
   Text,
 } from "@radix-ui/themes";
 
-import { useAppState } from "../../hooks/useAppState";
-import { ProjectsMenu } from "../../components/ProjectsMenu";
+import { ProjectsMenu } from "./components/ProjectsMenu";
 
-export const ProjectsNavigation = () => {
+import type { EnvFile } from "../../../../types/EnvFile";
+
+type Props = {
+  files: EnvFile[];
+  areFileLoading?: boolean;
+  onOpenFile: (file: string) => void;
+};
+
+export const ProjectsNavigation = ({
+  areFileLoading = false,
+  files,
+  onOpenFile,
+}: Props) => {
   const { height } = useWindowSize();
 
-  const { envFiles, selectedFiles, isLoadingFiles } = useAppState();
   return (
     <ScrollArea scrollbars="vertical" style={{ height: height - 40 }}>
       <Box p="4">
@@ -22,10 +32,11 @@ export const ProjectsNavigation = () => {
           <Heading size="4" weight="medium">
             Projects
           </Heading>
-          {isLoadingFiles ? (
+
+          {areFileLoading ? (
             <Spinner />
-          ) : envFiles.length > 0 ? (
-            <ProjectsMenu projects={envFiles} activeProject={selectedFiles} />
+          ) : files.length > 0 ? (
+            <ProjectsMenu projects={files} onOpenFile={onOpenFile} />
           ) : (
             <Box>
               <Text size="2">No projects found</Text>

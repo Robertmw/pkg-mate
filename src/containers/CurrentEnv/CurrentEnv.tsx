@@ -1,44 +1,32 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useWindowSize } from "react-use";
 
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  ScrollArea,
-  TextField,
-} from "@radix-ui/themes";
+import { Box, Flex, ScrollArea } from "@radix-ui/themes";
 
 import { cn } from "../../utils/cn";
 
-import { useAppState } from "../../hooks/useAppState";
-import { useTabViewsState } from "../../hooks/useTabViewsState";
+import { useAppSelector, selectActiveFileData } from "../../store";
 
 import { EnvList } from "../../components/EnvList";
 import { EmptyState } from "../../components/EmptyState";
 import { ActiveFileValues } from "../../components/ActiveFileValues";
 
+import { AddNewVariable } from "./components/AddNewVariable";
+
 export const CurrentEnv = () => {
   const { height } = useWindowSize();
 
-  const { activeView } = useTabViewsState();
-  const { envFiles } = useAppState();
+  const activeFileData = useAppSelector(selectActiveFileData);
 
   const [activeVariable, setActiveVariable] = useState<string>("");
 
-  const activeFile = useMemo(
-    () => envFiles.find((file) => file.path === activeView),
-    [envFiles, activeView]
-  );
-
   useEffect(() => {
-    if (activeFile?.variables && activeFile.variables.length > 0) {
-      setActiveVariable(activeFile.variables[0].key);
+    if (activeFileData?.variables && activeFileData.variables.length > 0) {
+      setActiveVariable(activeFileData.variables[0].key);
     }
-  }, [activeFile?.variables]);
+  }, [activeFileData?.variables]);
 
-  if (!activeFile) {
+  if (!activeFileData) {
     return (
       <EmptyState
         iconName="PackageOpen"
@@ -50,29 +38,24 @@ export const CurrentEnv = () => {
   return (
     <Flex className="h-full">
       <ScrollArea
-        className={cn("w-96", "border-r", "shrink-0")}
+        className={cn("w-96", "shrink-0", "bg-zinc-50")}
         scrollbars="vertical"
         style={{ height: height - 40 }}
       >
-        <Box className="p-4">
-          <TextField.Root size="3" placeholder="Add new variable">
-            <TextField.Slot side="right" px="1">
-              <Button>Add</Button>
-            </TextField.Slot>
-          </TextField.Root>
-        </Box>
+        <AddNewVariable />
         <EnvList
-          activeFile={activeFile}
+          activeFile={activeFileData}
           activeVariable={activeVariable}
           setActiveVariable={setActiveVariable}
         />
       </ScrollArea>
+
       <Box className="grow">
         {activeVariable && (
           <ActiveFileValues
-            key={activeVariable}
-            activeFilePath={activeFile.path}
-            variable={activeFile.variables.find(
+            key={`${activeFileData.path}-${activeVariable}`}
+            activeFilePath={activeFileData.path}
+            variable={activeFileData.variables.find(
               (variable) => variable.key === activeVariable
             )}
           />
