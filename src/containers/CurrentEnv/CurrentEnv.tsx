@@ -5,7 +5,17 @@ import { Box, Flex, ScrollArea } from "@radix-ui/themes";
 
 import { cn } from "../../utils/cn";
 
-import { useAppSelector, selectActiveFileData } from "../../store";
+import {
+  useAppSelector,
+  useAppDispatch,
+
+  // Selectors
+  selectActiveFileData,
+
+  // Actions
+  updateVariableInFileAndSync,
+  addVariableInFileAndSync,
+} from "../../store";
 
 import { EnvList } from "../../components/EnvList";
 import { EmptyState } from "../../components/EmptyState";
@@ -14,6 +24,7 @@ import { ActiveFileValues } from "../../components/ActiveFileValues";
 import { AddNewVariable } from "./components/AddNewVariable";
 
 export const CurrentEnv = () => {
+  const dispatch = useAppDispatch();
   const { height } = useWindowSize();
 
   const activeFileData = useAppSelector(selectActiveFileData);
@@ -35,6 +46,14 @@ export const CurrentEnv = () => {
     );
   }
 
+  const handleAddVariable = (key: string) => {
+    dispatch(addVariableInFileAndSync(activeFileData.path, key));
+  };
+
+  const handleSaveVariable = (key: string, value: string) => {
+    dispatch(updateVariableInFileAndSync(activeFileData.path, key, value));
+  };
+
   return (
     <Flex className="h-full">
       <ScrollArea
@@ -42,7 +61,7 @@ export const CurrentEnv = () => {
         scrollbars="vertical"
         style={{ height: height - 40 }}
       >
-        <AddNewVariable />
+        <AddNewVariable onClickAdd={handleAddVariable} />
         <EnvList
           activeFile={activeFileData}
           activeVariable={activeVariable}
@@ -54,10 +73,10 @@ export const CurrentEnv = () => {
         {activeVariable && (
           <ActiveFileValues
             key={`${activeFileData.path}-${activeVariable}`}
-            activeFilePath={activeFileData.path}
             variable={activeFileData.variables.find(
               (variable) => variable.key === activeVariable
             )}
+            onSave={handleSaveVariable}
           />
         )}
       </Box>

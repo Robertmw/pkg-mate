@@ -6,11 +6,11 @@ import { produce } from "immer";
 import { getVariablesFromRawData } from "../utils/getVariablesFromRawData";
 
 /**
- * @description Handle writing a key-value pair to a .env file
+ * @description Handle writing a new key-value pair to a .env file
  * @param mainWindow
  * @returns
  */
-export function handleWriteEnvFile(mainWindow: BrowserWindow) {
+export function handleWriteNewEnvVariable(mainWindow: BrowserWindow) {
   return async (
     event: IpcMainInvokeEvent,
     filePath: string,
@@ -25,6 +25,8 @@ export function handleWriteEnvFile(mainWindow: BrowserWindow) {
 
       if (existingVariable) {
         existingVariable.value = value;
+      } else {
+        draft.push({ key, value, rawValue: `${key}=${value}` });
       }
     });
 

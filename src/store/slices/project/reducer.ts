@@ -37,10 +37,50 @@ const projectSlice = createSlice({
       );
       state.activeFile = state.openFiles[state.openFiles.length - 1] || null;
     },
+    addVariableInFile: (state, action: PayloadAction<string>) => {
+      const file = state.files.find((file) => file.path === state.activeFile);
+
+      if (file) {
+        file.variables.push({
+          key: action.payload,
+          value: "",
+          rawValue: "",
+        });
+      }
+    },
+    updateVariableInFile: (
+      state,
+      action: PayloadAction<{ path: string; key: string; value: string }>
+    ) => {
+      const file = state.files.find(
+        (file) => file.path === action.payload.path
+      );
+
+      if (file) {
+        file.variables = file.variables.map((variable) => {
+          if (variable.key === action.payload.key) {
+            return {
+              ...variable,
+              value: action.payload.value,
+            };
+          }
+
+          return variable;
+        });
+      } else {
+        throw new Error("No file found");
+      }
+    },
   },
 });
 
 export const projectReducer = projectSlice.reducer;
 
-export const { setRootPath, setFiles, openFile, closeFile } =
-  projectSlice.actions;
+export const {
+  setRootPath,
+  setFiles,
+  openFile,
+  closeFile,
+  addVariableInFile,
+  updateVariableInFile,
+} = projectSlice.actions;

@@ -1,16 +1,18 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { Flex } from "@radix-ui/themes";
 
-import { type VariableEntry } from "../../types/VariableEntry";
+import { FilesApi } from "../../utils/FilesApi";
 
 import { VariableValue } from "../VariableValue";
 
+import type { VariableEntry } from "../../types/VariableEntry";
+
 type Props = {
-  activeFilePath: string;
   variable: VariableEntry;
+  onSave: (key: string, value: string) => void;
 };
 
-export const ActiveFileValues = ({ activeFilePath, variable }: Props) => {
+export const ActiveFileValues = ({ variable, onSave }: Props) => {
   const defaultValues = variable?.key ? { [variable.key]: variable.value } : {};
   const methods = useForm({
     defaultValues,
@@ -21,10 +23,7 @@ export const ActiveFileValues = ({ activeFilePath, variable }: Props) => {
     const formValue = values[key];
 
     if (formValue) {
-      const [_, comment] = variable.rawValue.split("#");
-      const value = comment ? `${formValue} #${comment}` : formValue.toString();
-
-      window.electronAPI.updateEnvVariable(activeFilePath, key, value);
+      onSave(key, formValue);
     }
   };
 

@@ -30,8 +30,6 @@ export const GlobalSidebar = () => {
     const folderPath = await FilesApi.openFolder();
 
     if (folderPath) {
-      window.electronAPI.storageSet("projectPath", folderPath);
-
       dispatch(openFileByPath(folderPath));
     }
   };

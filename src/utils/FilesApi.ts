@@ -1,12 +1,18 @@
 export const FilesApi = {
   /**
    * @description
-   *    This function is used to open the folder dialog.
+   *    This function is used to open the folder dialog and saves the selected folder path.
    *
    * @returns - The selected folder path.
    */
   async openFolder() {
-    return window.electronAPI.openFolder();
+    const path = window.electronAPI.openFolder();
+
+    if (path) {
+      window.electronAPI.storageSet("projectPath", path);
+    }
+
+    return path;
   },
 
   /**
@@ -35,5 +41,17 @@ export const FilesApi = {
     const files = await Promise.all(readFilesPromises);
 
     return files;
+  },
+
+  async addEnvVariable(filePath: string, key: string, value: string) {
+    return window.electronAPI.addEnvVariable(filePath, key, value);
+  },
+
+  async updateEnvVariable(filePath: string, key: string, value: string) {
+    return window.electronAPI.updateEnvVariable(filePath, key, value);
+  },
+
+  async deleteEnvVariable(filePath: string, key: string) {
+    return window.electronAPI.removeEnvVariable(filePath, key);
   },
 };

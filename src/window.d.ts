@@ -8,6 +8,12 @@ export interface ElectronAPI {
     key: string,
     value: string
   ) => Promise<void>;
+  addEnvVariable: (
+    filePath: string,
+    key: string,
+    value: string
+  ) => Promise<void>;
+  removeEnvVariable: (filePath: string, key: string) => Promise;
 
   storageGet: (key: string) => any;
   storageSet: (key: string, value: any) => void;

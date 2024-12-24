@@ -6,9 +6,11 @@ import storage from "electron-json-storage";
 
 import {
   DIALOG_OPEN_FOLDER,
+  FILES_DELETE_ENV_VARIABLE,
   FILES_FIND_ENV,
+  FILES_NEW_ENV_VARIABLE,
   FILES_READ_ENV,
-  FILES_SAVE_ENV,
+  FILES_UPDATE_ENV_VARIABLE,
   STORAGE_GET,
   STORAGE_SET,
 } from "./constants/handlers";
@@ -16,9 +18,11 @@ import {
 import { handleOpenDialog } from "./handlers/openDialog";
 import { handleReadEnvFiles } from "./handlers/readEnvFiles";
 import { handleReadEnvFile } from "./handlers/readEnvFile";
-import { handleWriteEnvFile } from "./handlers/writeEnvFile";
+import { handleWriteUpdatedEnvVariable } from "./handlers/writeUpdatedEnvVariable";
 import { handleReadStorageKey } from "./handlers/readStorageKey";
 import { handleWriteStorageKey } from "./handlers/writeStorageKey";
+import { handleWriteNewEnvVariable } from "./handlers/writeNewEnvVariable";
+import { handleWriteRemoveEnvVariable } from "./handlers/writeRemoveEnvVariable";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -93,7 +97,15 @@ ipcMain.handle(DIALOG_OPEN_FOLDER, handleOpenDialog(mainWindow));
 
 ipcMain.handle(FILES_READ_ENV, handleReadEnvFile(mainWindow));
 ipcMain.handle(FILES_FIND_ENV, handleReadEnvFiles(mainWindow));
-ipcMain.handle(FILES_SAVE_ENV, handleWriteEnvFile(mainWindow));
+ipcMain.handle(
+  FILES_UPDATE_ENV_VARIABLE,
+  handleWriteUpdatedEnvVariable(mainWindow)
+);
+ipcMain.handle(FILES_NEW_ENV_VARIABLE, handleWriteNewEnvVariable(mainWindow));
+ipcMain.handle(
+  FILES_DELETE_ENV_VARIABLE,
+  handleWriteRemoveEnvVariable(mainWindow)
+);
 
 ipcMain.handle(STORAGE_GET, handleReadStorageKey(mainWindow));
 ipcMain.handle(STORAGE_SET, handleWriteStorageKey(mainWindow));
