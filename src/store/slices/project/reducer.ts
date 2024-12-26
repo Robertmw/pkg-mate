@@ -71,6 +71,22 @@ const projectSlice = createSlice({
         throw new Error("No file found");
       }
     },
+    deleteVariableInFile: (
+      state,
+      action: PayloadAction<{ path: string; key: string }>
+    ) => {
+      const file = state.files.find(
+        (file) => file.path === action.payload.path
+      );
+
+      if (file) {
+        file.variables = file.variables.filter(
+          (variable) => variable.key !== action.payload.key
+        );
+      } else {
+        throw new Error("No file found");
+      }
+    },
   },
 });
 
@@ -83,4 +99,5 @@ export const {
   closeFile,
   addVariableInFile,
   updateVariableInFile,
+  deleteVariableInFile,
 } = projectSlice.actions;

@@ -15,6 +15,7 @@ import {
   // Actions
   updateVariableInFileAndSync,
   addVariableInFileAndSync,
+  deleteVariableInFileAndSync,
 } from "../../store";
 
 import { EnvList } from "../../components/EnvList";
@@ -32,8 +33,10 @@ export const CurrentEnv = () => {
   const [activeVariable, setActiveVariable] = useState<string>("");
 
   useEffect(() => {
-    if (activeFileData?.variables && activeFileData.variables.length > 0) {
-      setActiveVariable(activeFileData.variables[0].key);
+    if (!activeVariable) {
+      if (activeFileData?.variables && activeFileData.variables.length > 0) {
+        setActiveVariable(activeFileData.variables[0].key);
+      }
     }
   }, [activeFileData?.variables]);
 
@@ -52,6 +55,20 @@ export const CurrentEnv = () => {
 
   const handleSaveVariable = (key: string, value: string) => {
     dispatch(updateVariableInFileAndSync(activeFileData.path, key, value));
+  };
+
+  const handleDeleteVariable = (key: string) => {
+    if (activeFileData?.variables && activeFileData.variables.length > 0) {
+      const nextActiveVariable = activeFileData.variables[0].key;
+
+      if (nextActiveVariable && nextActiveVariable !== key) {
+        setActiveVariable(nextActiveVariable);
+      }
+    } else {
+      setActiveVariable("");
+    }
+
+    dispatch(deleteVariableInFileAndSync(activeFileData.path, key));
   };
 
   return (
@@ -77,6 +94,7 @@ export const CurrentEnv = () => {
               (variable) => variable.key === activeVariable
             )}
             onSave={handleSaveVariable}
+            onDelete={handleDeleteVariable}
           />
         )}
       </Box>

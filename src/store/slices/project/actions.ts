@@ -1,7 +1,11 @@
 import { FilesApi } from "../../../utils/FilesApi";
 
 import {
+  // Selectors
   selectActiveFileData,
+
+  // Actions
+  deleteVariableInFile,
   setFiles,
   setRootPath,
   updateVariableInFile,
@@ -65,4 +69,26 @@ export const updateVariableInFileAndSync =
     await FilesApi.updateEnvVariable(path, key, updatedValue);
 
     dispatch(updateVariableInFile({ path, key, value }));
+  };
+
+export const deleteVariableInFileAndSync =
+  (path: string, key: string): AppThunk =>
+  async (dispatch, getState) => {
+    const fileData = selectActiveFileData(getState());
+
+    if (!fileData) {
+      throw new Error("No file data found");
+    }
+
+    const variable = fileData.variables.find(
+      (variable) => variable.key === key
+    );
+
+    if (!variable) {
+      throw new Error("No variable found");
+    }
+
+    await FilesApi.deleteEnvVariable(path, key);
+
+    dispatch(deleteVariableInFile({ path, key }));
   };

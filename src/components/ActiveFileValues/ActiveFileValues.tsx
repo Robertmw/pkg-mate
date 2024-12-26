@@ -10,9 +10,10 @@ import type { VariableEntry } from "../../types/VariableEntry";
 type Props = {
   variable: VariableEntry;
   onSave: (key: string, value: string) => void;
+  onDelete: (key: string) => void;
 };
 
-export const ActiveFileValues = ({ variable, onSave }: Props) => {
+export const ActiveFileValues = ({ variable, onSave, onDelete }: Props) => {
   const defaultValues = variable?.key ? { [variable.key]: variable.value } : {};
   const methods = useForm({
     defaultValues,
@@ -27,10 +28,6 @@ export const ActiveFileValues = ({ variable, onSave }: Props) => {
     }
   };
 
-  const handleDeleteVariable = (key: string) => {
-    console.log("Delete", key);
-  };
-
   if (!variable) {
     return null;
   }
@@ -41,7 +38,7 @@ export const ActiveFileValues = ({ variable, onSave }: Props) => {
         <VariableValue
           key={variable.key}
           data={variable}
-          onDelete={handleDeleteVariable}
+          onDelete={onDelete}
           onSave={handleSaveVariable}
         />
       </FormProvider>
