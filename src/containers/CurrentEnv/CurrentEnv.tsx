@@ -51,6 +51,8 @@ export const CurrentEnv = () => {
 
   const handleAddVariable = (key: string) => {
     dispatch(addVariableInFileAndSync(activeFileData.path, key));
+
+    setActiveVariable(key);
   };
 
   const handleSaveVariable = (key: string, value: string) => {

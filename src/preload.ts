@@ -4,6 +4,7 @@ import { contextBridge, ipcRenderer } from "electron";
 
 import {
   DIALOG_OPEN_FOLDER,
+  FILES_DELETE_ENV_VARIABLE,
   FILES_FIND_ENV,
   FILES_NEW_ENV_VARIABLE,
   FILES_READ_ENV,
@@ -25,7 +26,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   addEnvVariable: (filePath: string, key: string, value: string) =>
     ipcRenderer.invoke(FILES_NEW_ENV_VARIABLE, filePath, key, value),
   removeEnvVariable: (filePath: string, key: string) =>
-    ipcRenderer.invoke(FILES_NEW_ENV_VARIABLE, filePath, key),
+    ipcRenderer.invoke(FILES_DELETE_ENV_VARIABLE, filePath, key),
 
   storageGet: (key: string) => ipcRenderer.invoke(STORAGE_GET, key),
   storageSet: (key: string, value: unknown) =>

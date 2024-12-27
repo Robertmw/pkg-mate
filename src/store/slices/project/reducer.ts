@@ -38,10 +38,12 @@ const projectSlice = createSlice({
       state.activeFile = state.openFiles[state.openFiles.length - 1] || null;
     },
     addVariableInFile: (state, action: PayloadAction<string>) => {
-      const file = state.files.find((file) => file.path === state.activeFile);
+      const fileIndex = state.files.findIndex(
+        (file) => file.path === state.activeFile
+      );
 
-      if (file) {
-        file.variables.push({
+      if (fileIndex >= 0) {
+        state.files[fileIndex].variables.push({
           key: action.payload,
           value: "",
           rawValue: "",

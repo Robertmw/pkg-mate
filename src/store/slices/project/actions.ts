@@ -5,10 +5,11 @@ import {
   selectActiveFileData,
 
   // Actions
-  deleteVariableInFile,
   setFiles,
   setRootPath,
+  addVariableInFile,
   updateVariableInFile,
+  deleteVariableInFile,
 } from "../project";
 
 import type { AppThunk } from "../../types";
@@ -43,7 +44,7 @@ export const addVariableInFileAndSync =
     }
 
     await FilesApi.addEnvVariable(path, key, "");
-    dispatch(updateVariableInFile({ path, key, value: "" }));
+    dispatch(addVariableInFile(key));
   };
 
 export const updateVariableInFileAndSync =
