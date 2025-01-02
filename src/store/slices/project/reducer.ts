@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { StorageApi } from "../../../utils/StorageApi";
+
 import type { EnvFile } from "../../../types/EnvFile";
 import type { ProjectSlice } from "./types";
 
@@ -15,9 +17,18 @@ const projectSlice = createSlice({
   name: "project",
   initialState,
   reducers: {
-    setRootPath: (state, action: PayloadAction<string>) => {
-      state.rootPath = action.payload;
+    setRootPath: (
+      state,
+      action: PayloadAction<{
+        path: string;
+        openFiles: string[];
+        activeFile: string | null;
+      }>
+    ) => {
+      state.rootPath = action.payload.path;
       state.isLoadingFiles = true;
+      state.openFiles = action.payload.openFiles;
+      state.activeFile = action.payload.activeFile;
     },
     setFiles: (state, action: PayloadAction<EnvFile[]>) => {
       state.files = action.payload;
@@ -30,12 +41,24 @@ const projectSlice = createSlice({
         state.openFiles.push(action.payload);
         state.activeFile = action.payload;
       }
+
+      StorageApi.setItem("projectPath", {
+        path: state.rootPath,
+        openFiles: Array.from(state.openFiles),
+        activeFile: state.activeFile,
+      });
     },
     closeFile: (state, action: PayloadAction<string>) => {
       state.openFiles = state.openFiles.filter(
         (file) => file !== action.payload
       );
       state.activeFile = state.openFiles[state.openFiles.length - 1] || null;
+
+      StorageApi.setItem("projectPath", {
+        path: state.rootPath,
+        openFiles: Array.from(state.openFiles),
+        activeFile: state.activeFile,
+      });
     },
     addVariableInFile: (
       state,

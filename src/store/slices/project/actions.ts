@@ -1,4 +1,5 @@
 import { FilesApi } from "../../../utils/FilesApi";
+import { StorageApi } from "../../../utils/StorageApi";
 
 import {
   // Selectors
@@ -17,11 +18,15 @@ import {
 import type { AppThunk } from "../../types";
 
 export const getInitialRootAndFiles = (): AppThunk => async (dispatch) => {
-  const rootPath = await FilesApi.getSavedRootPath();
+  const { path, openFiles, activeFile } = await StorageApi.getItem<{
+    path: string;
+    openFiles: string[];
+    activeFile: string | null;
+  }>("projectPath");
 
-  if (rootPath) {
-    dispatch(setRootPath(rootPath));
-    const files = await FilesApi.getEnvsFilesFromPath(rootPath);
+  if (path) {
+    dispatch(setRootPath({ path, openFiles: openFiles ?? [], activeFile }));
+    const files = await FilesApi.getEnvsFilesFromPath(path);
 
     dispatch(setFiles(files));
   }
@@ -30,7 +35,7 @@ export const getInitialRootAndFiles = (): AppThunk => async (dispatch) => {
 export const openFileByPath =
   (path: string): AppThunk =>
   async (dispatch) => {
-    dispatch(setRootPath(path));
+    dispatch(setRootPath({ path, openFiles: [], activeFile: null }));
     const files = await FilesApi.getEnvsFilesFromPath(path);
 
     dispatch(setFiles(files));

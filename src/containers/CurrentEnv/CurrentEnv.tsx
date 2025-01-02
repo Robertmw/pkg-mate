@@ -72,10 +72,8 @@ export const CurrentEnv = () => {
   const [activeVariable, setActiveVariable] = useState<string>("");
 
   useEffect(() => {
-    if (!activeVariable) {
-      if (activeFileData?.variables && activeFileData.variables.length > 0) {
-        setActiveVariable(activeFileData.variables[0].key);
-      }
+    if (activeFileData?.variables && activeFileData.variables.length > 0) {
+      setActiveVariable(activeFileData.variables[0].key);
     }
   }, [activeFileData?.variables]);
 

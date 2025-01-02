@@ -1,3 +1,5 @@
+import { StorageApi } from "./StorageApi";
+
 export const FilesApi = {
   /**
    * @description
@@ -6,10 +8,14 @@ export const FilesApi = {
    * @returns - The selected folder path.
    */
   async openFolder() {
-    const path = window.electronAPI.openFolder();
+    const path = await window.electronAPI.openFolder();
 
     if (path) {
-      window.electronAPI.storageSet("projectPath", path);
+      StorageApi.setItem("projectPath", {
+        path,
+        openFiles: [],
+        activeFile: null,
+      });
     }
 
     return path;
@@ -22,8 +28,12 @@ export const FilesApi = {
    * @returns - The root path from the storage.
    */
   async getSavedRootPath() {
-    const rootPath = await window.electronAPI.storageGet("projectPath");
-    return rootPath ?? null;
+    const { path } = await StorageApi.getItem<{
+      path: string;
+      openFiles: string[];
+    }>("projectPath");
+
+    return path ?? null;
   },
 
   /**
