@@ -37,16 +37,19 @@ const projectSlice = createSlice({
       );
       state.activeFile = state.openFiles[state.openFiles.length - 1] || null;
     },
-    addVariableInFile: (state, action: PayloadAction<string>) => {
+    addVariableInFile: (
+      state,
+      action: PayloadAction<{ key: string; value?: string; path: string }>
+    ) => {
       const fileIndex = state.files.findIndex(
-        (file) => file.path === state.activeFile
+        (file) => file.path === action.payload.path
       );
 
       if (fileIndex >= 0) {
         state.files[fileIndex].variables.push({
-          key: action.payload,
-          value: "",
-          rawValue: "",
+          key: action.payload.key,
+          value: action.payload?.value || "",
+          rawValue: action.payload?.value || "",
         });
       }
     },

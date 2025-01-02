@@ -41,3 +41,13 @@ export const selectActiveFilesForNavigation = createSelector(
       }));
   }
 );
+
+export const selectFilesForNavigation = createSelector(
+  [selectFiles],
+  (files) => {
+    return files.map((file) => ({
+      name: file.name,
+      path: file.path,
+    }));
+  }
+);

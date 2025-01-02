@@ -1,11 +1,9 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { Flex } from "@radix-ui/themes";
 
-import { FilesApi } from "../../utils/FilesApi";
+import { VariableValue } from "../../components/VariableValue";
 
-import { VariableValue } from "../VariableValue";
-
-import type { VariableEntry } from "../../types/VariableEntry";
+import type { VariableEntry } from "../../../../types/VariableEntry";
 
 type Props = {
   variable: VariableEntry;

@@ -5,7 +5,7 @@ import { Box, Button, Flex } from "@radix-ui/themes";
 import { ListContent } from "./components/ListContent";
 import { TextFieldContent } from "./components/TextFieldContent";
 
-import type { VariableEntry } from "../../types/VariableEntry";
+import type { VariableEntry } from "../../../../types/VariableEntry";
 
 type Props = {
   data: VariableEntry;

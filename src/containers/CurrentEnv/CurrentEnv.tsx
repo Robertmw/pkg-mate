@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useWindowSize } from "react-use";
 
 import { Box, Flex, ScrollArea } from "@radix-ui/themes";
@@ -16,19 +16,58 @@ import {
   updateVariableInFileAndSync,
   addVariableInFileAndSync,
   deleteVariableInFileAndSync,
+  selectFilesForNavigation,
+  copyVariableInOtherFileAndSync,
+  moveVariableInOtherFileAndSync,
 } from "../../store";
 
-import { EnvList } from "../../components/EnvList";
 import { EmptyState } from "../../components/EmptyState";
-import { ActiveFileValues } from "../../components/ActiveFileValues";
 
+import { EnvList } from "./components/EnvList";
 import { AddNewVariable } from "./components/AddNewVariable";
+import { ActiveFileValues } from "./components/ActiveFileValues";
+
+import type { MenuItem } from "../../types/ContextMenu";
+import type { VariableEntry } from "../../types/VariableEntry";
+
+const menu: MenuItem[] = [
+  {
+    type: "item",
+    key: "duplicate",
+    label: "Duplicate",
+  },
+  {
+    type: "separator",
+  },
+  {
+    type: "sub",
+    key: "copyInProject",
+    label: "Copy in project...",
+    items: [],
+  },
+  {
+    type: "sub",
+    key: "moveToProject",
+    label: "Move to project...",
+    items: [],
+  },
+  {
+    type: "separator",
+  },
+  {
+    type: "item",
+    key: "delete",
+    label: "Delete",
+    color: "red",
+  },
+];
 
 export const CurrentEnv = () => {
   const dispatch = useAppDispatch();
   const { height } = useWindowSize();
 
   const activeFileData = useAppSelector(selectActiveFileData);
+  const files = useAppSelector(selectFilesForNavigation);
 
   const [activeVariable, setActiveVariable] = useState<string>("");
 
@@ -40,17 +79,27 @@ export const CurrentEnv = () => {
     }
   }, [activeFileData?.variables]);
 
-  if (!activeFileData) {
-    return (
-      <EmptyState
-        iconName="PackageOpen"
-        message="No active file in the selected project"
-      />
-    );
-  }
+  const contextMenu = useMemo<MenuItem[]>(() => {
+    return menu.map((item) => {
+      if (item.type === "sub") {
+        return {
+          ...item,
+          items: files
+            .filter((file) => file.path !== activeFileData.path)
+            .map((file) => ({
+              type: "item",
+              key: `${item.key}:${file.path}`,
+              label: file.name,
+            })),
+        };
+      }
 
-  const handleAddVariable = (key: string) => {
-    dispatch(addVariableInFileAndSync(activeFileData.path, key));
+      return item;
+    });
+  }, [activeFileData, files]);
+
+  const handleAddVariable = (key: string, value?: string) => {
+    dispatch(addVariableInFileAndSync(activeFileData.path, key, value));
 
     setActiveVariable(key);
   };
@@ -61,10 +110,22 @@ export const CurrentEnv = () => {
 
   const handleDeleteVariable = (key: string) => {
     if (activeFileData?.variables && activeFileData.variables.length > 0) {
-      const nextActiveVariable = activeFileData.variables[0].key;
+      const currentVariableIndex = activeFileData.variables.findIndex(
+        (variable) => variable.key === key
+      );
 
-      if (nextActiveVariable && nextActiveVariable !== key) {
-        setActiveVariable(nextActiveVariable);
+      const previousVariable =
+        activeFileData.variables[currentVariableIndex - 1];
+      const nextVariable = activeFileData.variables[currentVariableIndex + 1];
+
+      if (activeVariable === key) {
+        if (previousVariable) {
+          setActiveVariable(previousVariable.key);
+        } else if (nextVariable) {
+          setActiveVariable(nextVariable.key);
+        } else {
+          setActiveVariable("");
+        }
       }
     } else {
       setActiveVariable("");
@@ -72,6 +133,46 @@ export const CurrentEnv = () => {
 
     dispatch(deleteVariableInFileAndSync(activeFileData.path, key));
   };
+
+  const handleContextMenuAction = (
+    action: MenuItem,
+    variable: VariableEntry
+  ) => {
+    if (action.type === "separator") {
+      return;
+    }
+
+    if (action.key === "duplicate") {
+      return handleAddVariable(`${variable.key}_COPY`, variable.value);
+    }
+
+    if (action.key === "delete") {
+      return handleDeleteVariable(variable.key);
+    }
+
+    if (action.key.startsWith("copyInProject")) {
+      const [_, filePath] = action.key.split(":");
+      return dispatch(
+        copyVariableInOtherFileAndSync(filePath, variable.key, variable.value)
+      );
+    }
+
+    if (action.key.startsWith("moveToProject")) {
+      const [_, filePath] = action.key.split(":");
+      dispatch(
+        moveVariableInOtherFileAndSync(filePath, variable.key, variable.value)
+      );
+    }
+  };
+
+  if (!activeFileData) {
+    return (
+      <EmptyState
+        iconName="PackageOpen"
+        message="No active file in the selected project"
+      />
+    );
+  }
 
   return (
     <Flex className="h-full">
@@ -84,7 +185,9 @@ export const CurrentEnv = () => {
         <EnvList
           activeFile={activeFileData}
           activeVariable={activeVariable}
-          setActiveVariable={setActiveVariable}
+          contextMenu={contextMenu}
+          onSelectItem={setActiveVariable}
+          onClickContextItem={handleContextMenuAction}
         />
       </ScrollArea>
 

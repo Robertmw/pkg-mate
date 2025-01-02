@@ -1,6 +1,6 @@
 import { TextField } from "@radix-ui/themes";
 
-import type { VariableEntry } from "../../../../types/VariableEntry";
+import type { VariableEntry } from "../../../../../../types/VariableEntry";
 
 type Props = {
   data: VariableEntry;

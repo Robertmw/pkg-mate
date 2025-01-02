@@ -6,10 +6,12 @@ import {
 
   // Actions
   setFiles,
+  openFile,
   setRootPath,
   addVariableInFile,
   updateVariableInFile,
   deleteVariableInFile,
+  selectFiles,
 } from "../project";
 
 import type { AppThunk } from "../../types";
@@ -35,7 +37,7 @@ export const openFileByPath =
   };
 
 export const addVariableInFileAndSync =
-  (path: string, key: string): AppThunk =>
+  (path: string, key: string, value?: string): AppThunk =>
   async (dispatch, getState) => {
     const fileData = selectActiveFileData(getState());
 
@@ -43,8 +45,8 @@ export const addVariableInFileAndSync =
       throw new Error("No file data found");
     }
 
-    await FilesApi.addEnvVariable(path, key, "");
-    dispatch(addVariableInFile(key));
+    await FilesApi.addEnvVariable(path, key, value);
+    dispatch(addVariableInFile({ path, key, value }));
   };
 
 export const updateVariableInFileAndSync =
@@ -71,6 +73,49 @@ export const updateVariableInFileAndSync =
 
     dispatch(updateVariableInFile({ path, key, value }));
   };
+
+export const copyVariableInOtherFileAndSync = (
+  path: string,
+  key: string,
+  value: string
+): AppThunk => {
+  return async (dispatch, getState) => {
+    const files = selectFiles(getState());
+    const fileData = files.find((file) => file.path === path);
+
+    if (!fileData) {
+      throw new Error("No file data found");
+    }
+
+    await FilesApi.addEnvVariable(path, key, value);
+
+    dispatch(addVariableInFile({ path, key, value }));
+    dispatch(openFile(path));
+  };
+};
+
+export const moveVariableInOtherFileAndSync = (
+  path: string,
+  key: string,
+  value: string
+): AppThunk => {
+  return async (dispatch, getState) => {
+    const files = selectFiles(getState());
+    const fileData = files.find((file) => file.path === path);
+
+    const activeFileData = selectActiveFileData(getState());
+
+    if (!fileData || !activeFileData) {
+      throw new Error("No file data found");
+    }
+
+    await FilesApi.addEnvVariable(path, key, value);
+
+    dispatch(addVariableInFile({ path, key, value }));
+    dispatch(deleteVariableInFileAndSync(activeFileData.path, key));
+    dispatch(openFile(path));
+  };
+};
 
 export const deleteVariableInFileAndSync =
   (path: string, key: string): AppThunk =>
