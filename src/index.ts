@@ -42,6 +42,8 @@ const createWindow = (state?: any): void => {
   mainWindow = new BrowserWindow({
     width: state?.width ?? defaultState.width,
     height: state?.height ?? defaultState.height,
+    title: "Package mate",
+    titleBarStyle: "hiddenInset",
     webPreferences: {
       nodeIntegration: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,

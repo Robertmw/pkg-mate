@@ -16,14 +16,11 @@ export const ProjectsMenu = ({ projects, onOpenFile }: Props) => {
         <li key={file.path}>
           <Button
             variant="ghost"
-            className={cn(
-              "w-full",
-              "justify-start truncate whitespace-nowrap text-ellipsis"
-            )}
+            className={cn("w-full", "justify-start text-left")}
             size="3"
             onClick={() => onOpenFile(file.path)}
           >
-            {file.name}
+            <span className="px-4">{file.name}</span>
           </Button>
         </li>
       ))}

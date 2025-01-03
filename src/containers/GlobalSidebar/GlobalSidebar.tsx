@@ -1,4 +1,4 @@
-import { Flex, Button } from "@radix-ui/themes";
+import { Flex, Button, Box } from "@radix-ui/themes";
 
 import { FilesApi } from "../../utils/FilesApi";
 
@@ -35,10 +35,16 @@ export const GlobalSidebar = () => {
   };
 
   return (
-    <Flex direction="column" className="h-full w-60 shrink-0 border-r">
+    <Flex direction="column" className="w-60 shrink-0 border-r bg-zinc-50">
+      <Box
+        className="h-10"
+        style={{
+          "-webkit-app-region": "drag",
+        }}
+      />
       <Button
         size="3"
-        className="w-full rounded-none text-sm"
+        className="text-sm mx-4 mt-4"
         variant="soft"
         onClick={handleOpenFolderDialog}
       >

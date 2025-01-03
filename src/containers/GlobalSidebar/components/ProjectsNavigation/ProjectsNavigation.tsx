@@ -27,9 +27,9 @@ export const ProjectsNavigation = ({
 
   return (
     <ScrollArea scrollbars="vertical" style={{ height: height - 40 }}>
-      <Box p="4">
+      <Box>
         <Flex gap="4" direction="column">
-          <Heading size="4" weight="medium">
+          <Heading className="p-4" size="4" weight="medium">
             Projects
           </Heading>
 

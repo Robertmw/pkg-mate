@@ -175,7 +175,7 @@ export const CurrentEnv = () => {
   return (
     <Flex className="h-full">
       <ScrollArea
-        className={cn("w-96", "shrink-0", "bg-zinc-50")}
+        className={cn("w-1/2 min-w-96", "shrink-0", "border-r")}
         scrollbars="vertical"
         style={{ height: height - 40 }}
       >
