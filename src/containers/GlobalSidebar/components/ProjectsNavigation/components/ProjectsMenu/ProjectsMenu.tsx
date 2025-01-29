@@ -11,7 +11,7 @@ type Props = {
 
 export const ProjectsMenu = ({ projects, onOpenFile }: Props) => {
   return (
-    <ul className="flex flex-col gap-4">
+    <ul className="flex flex-col gap-4 mt-1">
       {projects.map((file) => (
         <li key={file.path}>
           <Button

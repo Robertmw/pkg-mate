@@ -21,7 +21,7 @@ export const VariableValue = ({ data, onDelete, onSave }: Props) => {
       return <ListContent data={data} />;
     }
     return <TextFieldContent data={data} />;
-  }, [isList]);
+  }, [isList, data.value]);
 
   return (
     <Flex direction="column">

@@ -28,8 +28,8 @@ export const ProjectsNavigation = ({
   return (
     <ScrollArea scrollbars="vertical" style={{ height: height - 40 }}>
       <Box>
-        <Flex gap="4" direction="column">
-          <Heading className="p-4" size="4" weight="medium">
+        <Flex direction="column">
+          <Heading className="p-4 uppercase mt-4" size="1" weight="medium">
             Projects
           </Heading>
 
@@ -38,7 +38,7 @@ export const ProjectsNavigation = ({
           ) : files.length > 0 ? (
             <ProjectsMenu projects={files} onOpenFile={onOpenFile} />
           ) : (
-            <Box>
+            <Box className="mx-4">
               <Text size="2">No projects found</Text>
             </Box>
           )}
